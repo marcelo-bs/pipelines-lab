@@ -1,46 +1,32 @@
-name: "Estrutura de Diretórios e Arquivos"
+name: "Hello Github Actions"
 
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
-
-env:
-  NODE_VERSION: "18"
-
+    
 jobs:
-  demonstrado-estrutura:
-    name: "Demonstrar Estrutura Básica"
+  hello-job:
     runs-on: ubuntu-latest
 
     steps:
-      - name: "Checkout do Código"
+      - name: "Checkout Código"
         uses: actions/checkout@v3
-
-      - name: "Mostrar estrutura .github/workflows"
+      - name: "Executar Hello World"
+        run: echo "Hello Github Actions"
+        
+      - name: "Mostrar Informações do Sistema"
         run: |
-          echo "== ESTRUTURA DE DIRETÓRIOS E ARQUIVOS .github/workflows == "
-          ls -la .github/workflows
-          echo ""
-          echo "Total de workflows: $(ls -1 .github/workflows | wc -l)"
-
-      - name: "Elementos obrigatórios do workflow"
+          echo "Sistema Operacional: ${{ runner.os }}"
+          echo "Diretório Atual: $(pwd)"
+          echo "Data Atual: $(date)"
+          echo "Usuário Atual: $(whoami)"
+      - name: "Listar Arquivos no Diretório"
+        run: ls -la
+      - name: "Comandos Múltiplos"
         run: |
-          echo "== ELEMENTOS OBRIGATÓRIOS DO WORKFLOW == "
-          echo "1. name: Nome do workflow"
-          echo "2. on: Evento(s) que disparam o workflow"
-          echo "3. jobs: Conjunto de tarefas a serem executadas"
-          echo "4. runs-on: Ambiente onde as tarefas serão executadas"
-          echo "5. steps: Passos individuais dentro de cada job"
-          echo ""
-          echo "Total de elementos obrigatórios: 5"
-
-      - name: "Variáveis e contexto"
-        run: |
-          echo "== VARIÁVEIS E CONTEXTO == "
-          echo "1. env: Variáveis de ambiente para o workflow ${{env.NODE_VERSION}}"
-          echo "2. github: Contexto do repositório e evento"
-          echo "3. runner: Informações sobre o ambiente de execução"
-          echo "4. secrets: Variáveis de ambiente seguras para senhas e chaves"
-          echo ""
-          echo "Total de variáveis e contextos comuns: 4"
+          echo "Este é o Lab 01 do curso de Github Actions"
+          echo "Workflow executado com sucesso!" 
+          echo "Pronto para os próximos passos!"      
