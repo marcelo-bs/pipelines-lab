@@ -1,32 +1,32 @@
-name: "Hello Github Actions"
+name: Jobs Paralelo vs Sequencial
+on: [push]
 
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-  workflow_dispatch:
-    
 jobs:
-  hello-job:
+  lint:
     runs-on: ubuntu-latest
-
     steps:
-      - name: "Checkout Código"
-        uses: actions/checkout@v3
-      - name: "Executar Hello World"
-        run: echo "Hello Github Actions"
-        
-      - name: "Mostrar Informações do Sistema"
-        run: |
-          echo "Sistema Operacional: ${{ runner.os }}"
-          echo "Diretório Atual: $(pwd)"
-          echo "Data Atual: $(date)"
-          echo "Usuário Atual: $(whoami)"
-      - name: "Listar Arquivos no Diretório"
-        run: ls -la
-      - name: "Comandos Múltiplos"
-        run: |
-          echo "Este é o Lab 01 do curso de Github Actions"
-          echo "Workflow executado com sucesso!" 
-          echo "Pronto para os próximos passos!"      
+      - uses: actions/checkout@v4
+      - name: Lint
+        run: echo "Lint OK"
+
+  testes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Testes
+        run: echo "Testes OK"
+
+  build:
+    needs: [lint, testes]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: echo "Build executado"
+
+  publicar:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Publicar (simulado)
+        run: echo "Publicação concluída"
