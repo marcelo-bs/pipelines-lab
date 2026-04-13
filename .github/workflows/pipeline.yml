@@ -1,32 +1,38 @@
-name: Jobs Paralelo vs Sequencial
-on: [push]
+name: "Estrutura de Diretório e Arquivos"
 
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:  
+
+env:
+  NODE_VERSION: "18"
+  
 jobs:
-  lint:
+  demonstrar_estrutura:
+    name: "Demonstrar Estrutura Básica"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Lint
-        run: echo "Lint OK"
+      - name: "Checkout do Código"
+        uses: actions/checkout@v3
 
-  testes:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Testes
-        run: echo "Testes OK"
+      - name: "Configurar Node.js"
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
 
-  build:
-    needs: [lint, testes]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Build
-        run: echo "Build executado"
-
-  publicar:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Publicar (simulado)
-        run: echo "Publicação concluída"
+      - name: "Exibir Estrutura de Diretórios e Arquivos"
+        run: |
+          echo "Estrutura de Diretórios e Arquivos:"
+          tree -L 2
+          
+      - name: "Variáveis e Contexto" 
+        run: |
+          echo "Variáveis de Ambiente:"
+          printenv
+          echo "Contexto do Workflow:"
+          echo "Variável env: ${{ env.NODE_VERSION }}"
+          echo "Repositório: ${{ github.repository }}"
+          echo "Branch: ${{ github.ref_name }}"
+          echo "Actor: ${{ github.actor }}"
+          echo "GITHUB_EVENT_NAME: $GITHUB_EVENT_NAME"    
