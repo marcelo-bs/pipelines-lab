@@ -1,38 +1,18 @@
-name: "Estrutura de Diretório e Arquivos"
-
 on:
-  push:
-    branches: [main]
-  workflow_dispatch:  
+  schedule:
+    - cron: '18 14 * * *'
+  workflow_dispatch:
 
-env:
-  NODE_VERSION: "18"
-  
 jobs:
-  demonstrar_estrutura:
-    name: "Demonstrar Estrutura Básica"
+  echedulet-job:
     runs-on: ubuntu-latest
+
     steps:
-      - name: "Checkout do Código"
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: "Configurar Node.js"
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-
-      - name: "Exibir Estrutura de Diretórios e Arquivos"
-        run: |
-          echo "Estrutura de Diretórios e Arquivos:"
-          tree -L 2
-          
-      - name: "Variáveis e Contexto" 
-        run: |
-          echo "Variáveis de Ambiente:"
-          printenv
-          echo "Contexto do Workflow:"
-          echo "Variável env: ${{ env.NODE_VERSION }}"
-          echo "Repositório: ${{ github.repository }}"
-          echo "Branch: ${{ github.ref_name }}"
-          echo "Actor: ${{ github.actor }}"
-          echo "GITHUB_EVENT_NAME: $GITHUB_EVENT_NAME"    
+      - name: Informações do Schecule
+        run: echo "O Schedule é executado diariamente às 14:12 UTC (11:12 BRT)."
+        
+      - name: Relatório diário automatizado
+        run: echo "Gerando relatório diário automatizado..."  
