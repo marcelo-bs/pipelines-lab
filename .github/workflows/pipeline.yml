@@ -25,3 +25,14 @@ jobs:
         if: github.event.action == 'closed'
         run: |
           echo "Issue closed: #${{ github.event.issue.number }} - ${{ github.event.issue.title }}"
+      - name: Add comment on issue opened
+        if: github.event.action == 'opened'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: "Thank you for opening this issue! We will look into it as soon as possible."
+            })    
