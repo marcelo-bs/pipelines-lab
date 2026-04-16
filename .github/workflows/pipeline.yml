@@ -6,19 +6,19 @@ permissions:
 on:
   issues:
     types: [opened, edited, closed]
-    
+
 jobs:
   issue-job:
     runs-on: ubuntu-latest
     steps:
-      - name: Check issue action
+      - name: Issue opened
         if: github.event.action == 'opened'
         run: echo "Issue opened: #${{ github.event.issue.number }} - ${{ github.event.issue.title }}"
-        
-      - name: Check issue action
+
+      - name: Issue edited
         if: github.event.action == 'edited'
         run: echo "Issue edited: #${{ github.event.issue.number }} - ${{ github.event.issue.title }}"
-        
-      - name: Check issue action
+
+      - name: Issue closed
         if: github.event.action == 'closed'
-        run: echo "Issue closed: #${{ github.event.issue.number }} - ${{ github.event.issue.title }}"    
+        run: echo "Issue closed: #${{ github.event.issue.number }} - ${{ github.event.issue.title }}"
