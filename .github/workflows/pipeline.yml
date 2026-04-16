@@ -1,31 +1,24 @@
-name: Push Trigger Workflow
+name: Issue Trigger Workflow
 
-### Executa apenas em push
+permissions:
+  issues: write
+
 on:
-  push:
-    branches:
-      - main
-      - develop
-    paths:
-      - 'src/**' # CRIAR ESSES ARQUIVOS PARA FUNCIONAR
-      - 'README.md' # CRIAR ESSES ARQUIVOS PARA FUNCIONAR
-
+  issues:
+    types: [opened, edited, closed]
+    
 jobs:
-  push-job:
+  issue-job:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Informações do push
-        run: |
-          echo "Push realizado para a branch ${{ github.ref }} com o commit ${{ github.sha }}"
-          echo "Autor do commit: ${{ github.actor }}"
-          echo "Mensagem do commit: ${{ github.event.head_commit.message }}"
-          echo "Arquivos modificados: ${{ github.event.head_commit.modified }}"
-          echo "Arquivos adicionados: ${{ github.event.head_commit.added }}"
-
-      - name: Listar arquivos modificados
-        run: |
-          echo "Arquivos no repositório:"
-          ls -la   
+      - name: Check issue action
+        if: github.event.action == 'opened'
+        run: echo "Issue opened: #${{ github.event.issue.number }} - ${{ github.event.issue.title }}"
+        
+      - name: Check issue action
+        if: github.event.action == 'edited'
+        run: echo "Issue edited: #${{ github.event.issue.number }} - ${{ github.event.issue.title }}"
+        
+      - name: Check issue action
+        if: github.event.action == 'closed'
+        run: echo "Issue closed: #${{ github.event.issue.number }} - ${{ github.event.issue.title }}"    
