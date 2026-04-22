@@ -1,105 +1,59 @@
-name: Steps Condicionais
+name: Demo GitHub Secrets
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    branches:
+      - main
   workflow_dispatch:
-    inputs:
-      run_tests:
-        description: 'Executar testes?'
-        required: false
-        default: true
-        type: boolean
-      deploy_environment:
-        description: 'Ambiente para deploy'
-        required: false
-        default: 'none'
-        type: choice
-        options:
-        - none
-        - development
-        - staging
-        - production
 
 jobs:
-  conditional-steps:
+  demonstrar-secrets:
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: Checkout código
-      uses: actions/checkout@v4
-    
-    - name: Step sempre executado
-      run: |
-        echo "Este step sempre executa"
-        echo "Evento: ${{ github.event_name }}"
-        echo "Branch: ${{ github.ref_name }}"
-    
-    - name: Step apenas em push
-      if: github.event_name == 'push'
-      run: |
-        echo "Este step executa apenas em PUSH"
-        echo "Commit: ${{ github.sha }}"
-    
-    - name: Step apenas em PR
-      if: github.event_name == 'pull_request'
-      run: |
-        echo "Este step executa apenas em PULL REQUEST"
-        echo "PR #${{ github.event.number }}"
-    
-    - name: Step apenas na main
-      if: github.ref == 'refs/heads/main'
-      run: |
-        echo "Este step executa apenas na branch MAIN"
-    
-    - name: Executar testes (input manual)
-      if: github.event.inputs.run_tests == 'true' || github.event_name != 'workflow_dispatch'
-      run: |
-        echo "Executando testes..."
-        sleep 2
-        echo "Testes concluídos"
-    
-    - name: Deploy para Development
-      if: github.event.inputs.deploy_environment == 'development'
-      run: |
-        echo "Deploy para DEVELOPMENT"
-        sleep 1
-        echo "Deploy concluído"
-    
-    - name: Deploy para Staging
-      if: github.event.inputs.deploy_environment == 'staging'
-      run: |
-        echo "Deploy para STAGING"
-        sleep 2
-        echo "Deploy concluído"
-    
-    - name: Deploy para Production
-      if: github.event.inputs.deploy_environment == 'production'
-      run: |
-        echo "Deploy para PRODUCTION"
-        echo "Aguardando aprovação manual..."
-        sleep 3
-        echo "Deploy concluído"
-    
-    - name: Step com múltiplas condições
-      if: github.event_name == 'push' && github.ref == 'refs/heads/main' && success()
-      run: |
-        echo "Push na main com sucesso nos steps anteriores"
-    
-    - name: Step que executa mesmo com falha
-      if: always()
-      run: |
-        echo "Este step sempre executa, mesmo se houver falhas"
-        echo "Status dos jobs anteriores: ${{ job.status }}"
-    
-    - name: Step apenas se houver falha
-      if: failure()
-      run: |
-        echo "Este step executa apenas se houver falha"
-    
-    - name: Cleanup
-      if: always()
-      run: |
-        echo "Limpeza final sempre executada"
+      # Step 1: Checkout do código
+      - name: Fazer checkout do repositório
+        uses: actions/checkout@v4
+
+      # Step 2: Demonstrar uso de secrets em variáveis de ambiente
+      - name: Configurar credenciais da API
+        env:
+          API_KEY: ${{ secrets.API_KEY }}
+          API_URL: ${{ secrets.API_URL }}
+        run: |
+          echo "Configurando conexão com API externa..."
+          echo "URL da API: $API_URL"
+          echo "API Key está configurada: ${API_KEY:+SIM}"
+
+      # Step 3: Simular conexão com banco de dados usando secrets
+      - name: Conectar ao banco de dados
+        env:
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_PORT: ${{ secrets.DB_PORT }}
+        run: |
+          echo "Configurando conexão com banco de dados..."
+          echo "Host: $DB_HOST"
+          echo "Porta: $DB_PORT"
+          echo "Usuário: $DB_USERNAME"
+          echo "Senha: $DB_PASSWORD"
+          echo "Observe que a senha será mascarada nos logs!"
+
+      # Step 4: Usar secret em um token de deploy
+      - name: Preparar deploy com token
+        env:
+          DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
+        run: |
+          echo "Preparando deploy..."
+          echo "Token de deploy: $DEPLOY_TOKEN"
+          echo "GitHub automaticamente mascara o valor real do token!"
+
+      # Step 5: Demonstrar que secrets não são expostos em logs
+      - name: Verificar segurança dos secrets
+        run: |
+          echo "Segurança dos Secrets:"
+          echo "- Secrets nunca aparecem em logs (são substituídos por ***)"
+          echo "- Secrets não são acessíveis em forks do repositório"
+          echo "- Secrets só são expostos para workflows autorizados"
+          echo "- Você pode atualizar secrets sem alterar o código"
